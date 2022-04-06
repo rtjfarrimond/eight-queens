@@ -25,7 +25,7 @@ extension (f: File)
 
 opaque type Rank = Int
 object Rank:
-  val allRanks = (1 to 8)
+  val allRanks: List[Rank] = (1 to 8).map(identity).toList
   def fromInt(i: Int): Option[Rank] =
     if (allRanks.contains(i)) Some(i) else None
 extension(r: Rank)
@@ -61,20 +61,18 @@ extension (q: Queen)
       Position(q.position.rank, file)
     }
     val diagonals = q.position.diagonals
-    horizontals.toSet ++ verticals.toSet ++ diagonals
+    (horizontals.toSet ++ verticals.toSet ++ diagonals) - q.position
+
+case class Board(queens: Set[Queen])
+object Board:
+  val allPositions = (Rank.allRanks, File.values.toList).mapN(Position.apply)
+
+// case class State(board: Board, valid: Set[Board])
+// def run(): Set[Board] =
+//   def placeQueen(board: board): Board =
+
 
 @main def hello: Unit =
-  println(File.values.toList)
-  println(Rank.fromInt(8))
-  println(Rank.fromInt(8).map(_.predecessor))
-  println(Rank.fromInt(8).map(_.successor))
-  println(File.A.successor)
-  println(File.G.successor)
-  println(File.H.successor)
-  println(File.A.predecessor)
-  println(File.G.predecessor)
-  println(File.H.predecessor)
-
   val rank = Rank.fromInt(4).get
   val file = File.D
   val pos = Position(rank, file)
