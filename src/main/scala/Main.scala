@@ -1,12 +1,20 @@
-def unthreatenedPositions(board: Board): Set[Position] =
-  Board.allPositions diff board.allThreatened
+import scala.annotation.tailrec
 
-def canPlaceQueen(board: Board): Boolean =
-  unthreatenedPositions(board).nonEmpty
+def placeNQueens(initialBoard: Board, n: Int): Set[Board] =
 
-@main def run(): Unit =
-  val position = Position(Rank.fromInt(4).get, File.D)
-  val queen = Queen(position)
-  val board = Board.empty.placeQueen(queen)
-  val nextQueen = Queen(unthreatenedPositions(board).head)
-  println(board.placeQueen(nextQueen).show)
+  @tailrec
+  def loop(acc: Set[Board], n: Int): Set[Board] =
+    if (n == 0) acc
+    else
+      val nextBoards = acc.filter(_.canPlaceQueen ).flatMap { board =>
+        board.unthreatenedPositions.map(board.placeQueenAt)
+      }
+      loop(nextBoards, n - 1)
+
+  loop(Set(initialBoard), n).filter(_.queens.size == n)
+
+@main def run(): Unit = {
+  val eightQueens = placeNQueens(Board.empty, 8)
+  eightQueens.takeRight(5).foreach(board => println(board.show))
+  println(eightQueens.size)
+}

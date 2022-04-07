@@ -10,9 +10,15 @@ object Board:
       board.queens.foldLeft(Set.empty[Position]) {
         case (acc, queen) => acc ++ queen.threatens
       }
+      
+    def unthreatenedPositions: Set[Position] =
+      allPositions diff board.allThreatened
 
-    def placeQueen(queen: Queen): Board =
-      board.copy(queens = board.queens + queen)
+    def canPlaceQueen: Boolean =
+      board.unthreatenedPositions.nonEmpty
+      
+    def placeQueenAt(position: Position): Board =
+      board.copy(queens = board.queens + Queen(position))
 
     def show: String =
       val firstLine = "\n   _______________\n"
